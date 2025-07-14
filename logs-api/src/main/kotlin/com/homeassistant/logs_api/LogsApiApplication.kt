@@ -1,4 +1,4 @@
-package com.home_assistant.logs_api
+package com.homeassistant.logs_api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -8,4 +8,4 @@ class LogsApiApplication
 
 fun main(args: Array<String>) {
 	runApplication<LogsApiApplication>(*args)
-}
+} 
