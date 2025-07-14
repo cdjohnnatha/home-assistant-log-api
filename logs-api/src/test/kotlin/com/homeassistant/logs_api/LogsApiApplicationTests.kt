@@ -1,4 +1,4 @@
-package com.home_assistant.logs_api
+package com.homeassistant.logs_api
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -9,5 +9,4 @@ class LogsApiApplicationTests {
 	@Test
 	fun contextLoads() {
 	}
-
-}
+} 
