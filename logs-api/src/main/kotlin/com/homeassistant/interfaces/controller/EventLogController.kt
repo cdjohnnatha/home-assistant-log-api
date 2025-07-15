@@ -9,11 +9,21 @@ import java.time.Instant
 import org.springframework.web.bind.annotation.RequestBody
 import com.homeassistant.interfaces.controller.dto.EventLogRequest
 import com.homeassistant.domain.model.EventLog
-import com.homeassistant.application.ProcessEventUseCase
+import com.homeassistant.application.usecases.ProcessEventUseCase
+import org.springframework.web.bind.annotation.GetMapping
 
 @RestController
 @RequestMapping("/api/v1/events")
 class EventLogController (private val processEventUseCase: ProcessEventUseCase) {
+
+    @GetMapping("/health")
+    fun healthCheck(): Map<String, Any> {
+        return mapOf(
+            "status" to "UP",
+            "service" to "home-assistant-log-api",
+            "timestamp" to Instant.now()
+        )
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
