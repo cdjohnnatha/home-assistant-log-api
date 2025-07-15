@@ -7,5 +7,5 @@ data class EventLogRequest(
     val source: String,
     val eventType: EventLogType,
     val timestamp: Instant? = null,
-    val payload: Map<String, Any> = emptyMap()
-) 
+    val payload: Map<String, Any> = emptyMap(),
+)
