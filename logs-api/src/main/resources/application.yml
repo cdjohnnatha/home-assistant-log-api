@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: logs-api
+  profiles:
+    active: ${SPRING_PROFILE_ACTIVE:dev}
+
+# Common logging configuration
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" 

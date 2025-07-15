@@ -5,5 +5,5 @@ enum class EventLogType {
     SYSTEM_EVENT,
     ERROR,
     WARNING,
-    INFO
-} 
+    INFO,
+}
