@@ -1,0 +1,8 @@
+server:
+  port: ${LOGS_API_PORT:8080}
+
+logging:
+  level:
+    com.homeassistant: ${WARN_LOG_LEVEL:WARN}
+    org.springframework.web: WARN
+    org.springframework.security: WARN 
