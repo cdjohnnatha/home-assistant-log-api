@@ -21,24 +21,19 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         
-    - name: Cache Gradle packages
-      uses: actions/cache@v4
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
       with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-          
+        cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+        
     - name: Make gradlew executable
       run: chmod +x ./gradlew
       
     - name: 🔨 Build Project
-      run: ./gradlew logs-api:build -x test
+      run: ./gradlew logs-api:build -x test --build-cache --configuration-cache
       
     - name: 🧪 Run Tests
-      run: ./gradlew logs-api:test
+      run: ./gradlew logs-api:test --build-cache --configuration-cache
       
     - name: 📝 Run Lint
-      run: ./gradlew logs-api:ktlintCheck 
+      run: ./gradlew logs-api:ktlintCheck --build-cache --configuration-cache 
