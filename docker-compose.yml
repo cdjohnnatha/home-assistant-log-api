@@ -1,0 +1,19 @@
+services:
+  logs-api:
+    build: .
+    container_name: home-assistant-logs-api
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    env_file:
+      - .env
+    environment:
+      # Override or add additional environment variables here if needed
+      - SPRING_PROFILE_ACTIVE=${SPRING_PROFILE_ACTIVE:-prod}
+      - JAVA_OPTS=${JAVA_OPTS:--Xmx512m -Xms256m}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 

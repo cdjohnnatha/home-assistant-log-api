@@ -1,0 +1,36 @@
+# Git files
+.git
+.gitignore
+
+# Gradle build artifacts
+.gradle
+build
+logs-api/build
+
+# Documentation
+*.md
+HELP.md
+
+# Environment files (keep .env for Docker Compose)
+.env.local
+.env.*.local
+
+# IDE files
+.idea
+.vscode
+*.iml
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Windows specific
+gradlew.bat
+
+# Logs
+logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp 
