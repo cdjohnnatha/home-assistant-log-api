@@ -1,10 +1,11 @@
-package com.homeassistant.interfaces.controller
+package com.homeassistant.presentation.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.homeassistant.TestConfiguration
 import com.homeassistant.application.usecases.ProcessEventUseCase
 import com.homeassistant.domain.enum.EventLogType
-import com.homeassistant.interfaces.controller.dto.EventLogRequest
 import com.homeassistant.logsapi.LogsApiApplication
+import com.homeassistant.presentation.dto.EventLogRequest
 import com.ninjasquad.springmockk.MockkBean
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -19,8 +21,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.Instant
 
-@SpringBootTest(classes = [LogsApiApplication::class]) // Specify the main application class
-@AutoConfigureMockMvc // Add MockMvc support
+@SpringBootTest(classes = [LogsApiApplication::class, TestConfiguration::class])
+@AutoConfigureMockMvc
+@ActiveProfiles("test") // Use test profile with mock AWS config
 @DisplayName("EventLogController Tests")
 class EventLogControllerTest {
     @Autowired private lateinit var mockMvc: MockMvc

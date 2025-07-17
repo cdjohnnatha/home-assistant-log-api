@@ -1,4 +1,4 @@
-name: Build Test Lint Pipeline
+name: Compile Lint Test Build Pipeline
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   pipeline:
-    name: Build → Test → Lint
+    name: Compile → Lint → Test → Build
     runs-on: ubuntu-latest
     
     steps:
@@ -29,11 +29,14 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x ./gradlew
       
-    - name: 🔨 Build Project
-      run: ./gradlew logs-api:build -x test --build-cache --configuration-cache
+    - name: ⚙️ Compile Code
+      run: ./gradlew logs-api:compileKotlin logs-api:compileTestKotlin --build-cache --configuration-cache
       
-    - name: 🧪 Run Tests
+    - name: 📝 Run Lint (Code Style)
+      run: ./gradlew logs-api:ktlintCheck --build-cache --configuration-cache
+
+    - name: 🧪 Run Tests (Quality Gate)
       run: ./gradlew logs-api:test --build-cache --configuration-cache
       
-    - name: 📝 Run Lint
-      run: ./gradlew logs-api:ktlintCheck --build-cache --configuration-cache 
+    - name: 🔨 Build & Package
+      run: ./gradlew logs-api:build --build-cache --configuration-cache

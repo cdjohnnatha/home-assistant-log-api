@@ -20,6 +20,9 @@ RUN ./gradlew logs-api:bootJar --no-daemon
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
 
+# Install curl for health checks
+RUN apk add --no-cache curl
+
 WORKDIR /app
 
 # Copy the built JAR from the builder stage

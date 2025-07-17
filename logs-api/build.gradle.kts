@@ -20,6 +20,14 @@ kotlin {
     jvmToolchain(21)
 }
 
+// Ensure all Kotlin compilation tasks use JVM 21
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
+}
+
 dependencies {
     // basic dependencies
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -39,6 +47,11 @@ dependencies {
     testImplementation("com.ninja-squad:springmockk:4.0.2")
     testImplementation("org.springframework.boot:spring-boot-starter-webflux")
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    // aws sns dependencies
+    implementation(platform("software.amazon.awssdk:bom:2.21.29"))
+    implementation("software.amazon.awssdk:sns")
+    implementation("software.amazon.awssdk:auth")
 }
 
 tasks.withType<Test> {

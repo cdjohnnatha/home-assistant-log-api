@@ -1,4 +1,4 @@
-package com.homeassistant.interfaces.controller.dto
+package com.homeassistant.presentation.dto
 
 import com.homeassistant.domain.enum.EventLogType
 import java.time.Instant

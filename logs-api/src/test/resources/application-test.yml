@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: logs-api-test
+
+# Test logging configuration
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  level:
+    com.homeassistant: DEBUG
+    org.springframework: WARN
+    root: WARN
+
+# AWS Configuration for tests - using environment variables like main app
+aws:
+  region: ${AWS_REGION:us-east-1}
+  access-key: ${AWS_ACCESS_KEY:test-access-key}
+  secret-key: ${AWS_SECRET_KEY:test-secret-key}
+  sns:
+    topic:
+      arn: ${AWS_SNS_TOPIC_ARN:arn:aws:sns:us-east-1:123456789012:test-topic} 

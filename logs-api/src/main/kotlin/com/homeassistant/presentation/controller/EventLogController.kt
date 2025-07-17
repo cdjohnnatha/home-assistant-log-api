@@ -1,8 +1,8 @@
-package com.homeassistant.interfaces.controller
+package com.homeassistant.presentation.controller
 
 import com.homeassistant.application.usecases.ProcessEventUseCase
 import com.homeassistant.domain.model.EventLog
-import com.homeassistant.interfaces.controller.dto.EventLogRequest
+import com.homeassistant.presentation.dto.EventLogRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

@@ -9,3 +9,12 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" 
+
+# AWS Configuration - available in all profiles
+aws:
+  region: ${AWS_REGION}
+  access-key: ${AWS_ACCESS_KEY}
+  secret-key: ${AWS_SECRET_KEY}
+  sns:
+    topic:
+      arn: ${AWS_SNS_TOPIC_ARN}

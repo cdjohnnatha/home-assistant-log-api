@@ -2,6 +2,10 @@ package com.homeassistant.application.usecases
 
 import com.homeassistant.domain.enum.EventLogType
 import com.homeassistant.domain.model.EventLog
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -10,7 +14,14 @@ import java.time.Instant
 
 @DisplayName("ProcessEventUseCase Tests")
 class ProcessEventUseCaseTest {
-    private val processEventUseCase = ProcessEventUseCase()
+    private lateinit var notificationPublisherUseCase: NotificationPublisherUseCase
+    private lateinit var processEventUseCase: ProcessEventUseCase
+
+    @BeforeEach
+    fun setup() {
+        notificationPublisherUseCase = mockk()
+        processEventUseCase = ProcessEventUseCase(notificationPublisherUseCase)
+    }
 
     @Nested
     @DisplayName("Event Processing")
@@ -26,9 +37,11 @@ class ProcessEventUseCaseTest {
                     timestamp = Instant.now(),
                     payload = mapOf("action" to "turn_on_light"),
                 )
+            every { notificationPublisherUseCase.execute(any()) } returns true
 
             // When & Then - verify no exception is thrown
             assertDoesNotThrow { processEventUseCase.execute(event) }
+            verify(exactly = 1) { notificationPublisherUseCase.execute(any()) }
         }
 
         @Test
@@ -36,6 +49,7 @@ class ProcessEventUseCaseTest {
         fun `should handle all event types`() {
             // Given
             val eventTypes = EventLogType.values()
+            every { notificationPublisherUseCase.execute(any()) } returns true
 
             // When & Then
             eventTypes.forEach { eventType ->
@@ -49,6 +63,8 @@ class ProcessEventUseCaseTest {
 
                 assertDoesNotThrow { processEventUseCase.execute(event) }
             }
+
+            verify(exactly = eventTypes.size) { notificationPublisherUseCase.execute(any()) }
         }
     }
 
@@ -66,9 +82,11 @@ class ProcessEventUseCaseTest {
                     timestamp = Instant.now(),
                     payload = emptyMap(),
                 )
+            every { notificationPublisherUseCase.execute(any()) } returns true
 
             // When & Then
             assertDoesNotThrow { processEventUseCase.execute(event) }
+            verify(exactly = 1) { notificationPublisherUseCase.execute(any()) }
         }
 
         @Test
@@ -93,9 +111,11 @@ class ProcessEventUseCaseTest {
                     timestamp = Instant.now(),
                     payload = complexPayload,
                 )
+            every { notificationPublisherUseCase.execute(any()) } returns true
 
             // When & Then
             assertDoesNotThrow { processEventUseCase.execute(event) }
+            verify(exactly = 1) { notificationPublisherUseCase.execute(any()) }
         }
     }
 }
