@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("NotificationPublisherUseCase Tests")
 class NotificationPublisherUseCaseTest {
-
     private lateinit var notificationPublisherPort: NotificationPublisherPort
     private lateinit var notificationPublisherUseCase: NotificationPublisherUseCase
 
@@ -26,7 +25,6 @@ class NotificationPublisherUseCaseTest {
     @Nested
     @DisplayName("Successful Publishing")
     inner class SuccessfulPublishing {
-
         @Test
         @DisplayName("Should publish notification successfully and return true")
         fun `should publish notification successfully and return true`() {
@@ -61,7 +59,6 @@ class NotificationPublisherUseCaseTest {
     @Nested
     @DisplayName("Failed Publishing")
     inner class FailedPublishing {
-
         @Test
         @DisplayName("Should return false when notification publishing fails")
         fun `should return false when notification publishing fails`() {
@@ -81,7 +78,6 @@ class NotificationPublisherUseCaseTest {
     @Nested
     @DisplayName("Edge Cases")
     inner class EdgeCases {
-
         @Test
         @DisplayName("Should handle empty message")
         fun `should handle empty message`() {
@@ -112,4 +108,4 @@ class NotificationPublisherUseCaseTest {
             verify(exactly = 1) { notificationPublisherPort.publish(specialMessage) }
         }
     }
-} 
+}

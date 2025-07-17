@@ -12,18 +12,20 @@ import software.amazon.awssdk.services.sns.SnsClient
 @Configuration
 @Profile("!test")
 class SnsConfig {
-
     @Bean
     fun snsClient(): SnsClient {
-        val accessKey = System.getenv("AWS_ACCESS_KEY")
-            ?: throw IllegalStateException("AWS_ACCESS_KEY environment variable is required")
-        val secretKey = System.getenv("AWS_SECRET_KEY")
-            ?: throw IllegalStateException("AWS_SECRET_KEY environment variable is required")
-        val regionName = System.getenv("AWS_REGION")
-            ?: throw IllegalStateException("AWS_REGION environment variable is required")
-        
+        val accessKey =
+            System.getenv("AWS_ACCESS_KEY")
+                ?: throw IllegalStateException("AWS_ACCESS_KEY environment variable is required")
+        val secretKey =
+            System.getenv("AWS_SECRET_KEY")
+                ?: throw IllegalStateException("AWS_SECRET_KEY environment variable is required")
+        val regionName =
+            System.getenv("AWS_REGION")
+                ?: throw IllegalStateException("AWS_REGION environment variable is required")
+
         logger.info("Set SNS Client for region: $regionName")
-        
+
         val credentials = AwsBasicCredentials.create(accessKey, secretKey)
         val region = Region.of(regionName)
 

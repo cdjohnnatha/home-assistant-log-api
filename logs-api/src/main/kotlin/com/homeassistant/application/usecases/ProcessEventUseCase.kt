@@ -6,10 +6,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class ProcessEventUseCase(private val notificationPublisher: NotificationPublisherUseCase) {
-
     fun execute(event: EventLog) {
         logger.info("event processed: $event")
-        
+
         val message = createNotificationMessage(event)
         val success = notificationPublisher.execute(message)
 
@@ -27,6 +26,6 @@ class ProcessEventUseCase(private val notificationPublisher: NotificationPublish
             Tipo: ${event.eventType}
             Timestamp: ${event.timestamp}
             Payload: ${event.payload}
-        """.trimIndent()
+            """.trimIndent()
     }
 }

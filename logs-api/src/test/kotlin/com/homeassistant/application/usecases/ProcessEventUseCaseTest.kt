@@ -14,7 +14,6 @@ import java.time.Instant
 
 @DisplayName("ProcessEventUseCase Tests")
 class ProcessEventUseCaseTest {
-    
     private lateinit var notificationPublisherUseCase: NotificationPublisherUseCase
     private lateinit var processEventUseCase: ProcessEventUseCase
 
@@ -64,7 +63,7 @@ class ProcessEventUseCaseTest {
 
                 assertDoesNotThrow { processEventUseCase.execute(event) }
             }
-            
+
             verify(exactly = eventTypes.size) { notificationPublisherUseCase.execute(any()) }
         }
     }

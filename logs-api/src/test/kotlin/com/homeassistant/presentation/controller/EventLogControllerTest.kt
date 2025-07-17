@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.homeassistant.TestConfiguration
 import com.homeassistant.application.usecases.ProcessEventUseCase
 import com.homeassistant.domain.enum.EventLogType
-import com.homeassistant.presentation.dto.EventLogRequest
 import com.homeassistant.logsapi.LogsApiApplication
+import com.homeassistant.presentation.dto.EventLogRequest
 import com.ninjasquad.springmockk.MockkBean
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

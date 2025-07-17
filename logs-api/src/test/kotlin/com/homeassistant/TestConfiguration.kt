@@ -10,10 +10,9 @@ import software.amazon.awssdk.services.sns.SnsClient
 @TestConfiguration
 @Profile("test")
 class TestConfiguration {
-
     @Bean
     @Primary
     fun mockSnsClient(): SnsClient {
         return mockk<SnsClient>(relaxed = true)
     }
-} 
+}

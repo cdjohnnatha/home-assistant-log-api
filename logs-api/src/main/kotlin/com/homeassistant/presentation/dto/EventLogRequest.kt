@@ -8,4 +8,4 @@ data class EventLogRequest(
     val eventType: EventLogType,
     val timestamp: Instant? = null,
     val payload: Map<String, Any> = emptyMap(),
-) 
+)

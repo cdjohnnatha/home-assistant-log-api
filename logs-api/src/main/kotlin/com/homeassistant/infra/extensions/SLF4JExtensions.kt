@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory
 
 /**
  * Extension property para SLF4J - uso automático em qualquer classe
- * 
+ *
  * Uso:
  * ```kotlin
  * import com.homeassistant.infra.extensions.logger
- * 
+ *
  * class MyClass {
  *     fun method() {
  *         logger.info("Log message")
@@ -19,4 +19,4 @@ import org.slf4j.LoggerFactory
  * ```
  */
 val <T : Any> T.logger: Logger
-    get() = LoggerFactory.getLogger(this::class.java) 
+    get() = LoggerFactory.getLogger(this::class.java)
