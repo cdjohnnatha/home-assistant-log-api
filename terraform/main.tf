@@ -211,7 +211,8 @@ resource "aws_instance" "api_server" {
 
   # User data script to set up Docker and your application
   user_data = base64encode(templatefile("${path.module}/user_data.sh", {
-    aws_region = var.aws_region
+    aws_region    = var.aws_region
+    sns_topic_arn = var.sns_topic_arn
   }))
 
   tags = merge(local.common_tags, {
