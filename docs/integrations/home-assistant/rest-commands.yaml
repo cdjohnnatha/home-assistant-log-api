@@ -1,0 +1,38 @@
+# REST Commands para APIs externas - Home Assistant Log API
+# Arquivo: api-integrations/home-assistant-logs.api.yaml
+
+# Health check da API SNS (on-demand)
+check_sns_api_health:
+  url: "http://3.87.38.170:8080/api/v1/events/health"
+  method: GET
+  timeout: 5
+
+# Envio principal de dados para API SNS
+send_temp_alert_to_sns_api:
+  url: "http://3.87.38.170:8080/api/v1/events"
+  method: POST
+  headers:
+    Content-Type: "application/json"
+  timeout: 10
+  payload: >
+    {
+      "source": "{{ source if source else 'home-assistant-default' }}",
+      "eventType": "{{ eventType if eventType else 'WARNING' }}",
+      "payload": {
+        "alert_type": "temperature_difference",
+        "quarto": {
+          "name": "Temperatura Quarto",
+          "temperature": {{ quarto_temp if quarto_temp else 0 }},
+          "sensor_id": "sensor.temperatura_quarto"
+        },
+        "escritorio": {
+          "name": "Temperatura Escritório", 
+          "temperature": {{ escritorio_temp if escritorio_temp else 0 }},
+          "sensor_id": "sensor.temperatura_escritorio"
+        },
+        "temperature_difference": {{ temp_diff if temp_diff else 0 }},
+        "threshold": 5,
+        "location": "raspberry-pi-5",
+        "house_zone": "residential"
+      }
+    } 

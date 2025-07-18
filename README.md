@@ -73,6 +73,18 @@ curl -X POST http://YOUR-IP:8080/api/v1/events \
 - **🔒 Secure**: IAM roles, no hardcoded credentials
 - **🎯 Clean Architecture**: Maintainable, testable design
 - **📊 Monitoring**: Health checks and logging
+- **🏠 Home Assistant Integration**: Production-tested with Raspberry Pi 5
+
+## 🏠 Real-World Integration
+
+This API has been successfully integrated with **Home Assistant** running on Raspberry Pi 5 for temperature monitoring and alerting. The integration includes:
+
+- **Robust sensor handling** for offline/unavailable sensors
+- **On-demand health checking** to minimize AWS costs
+- **Template-based data transformation** for complex payloads
+- **Complete automation workflow** from trigger to email notification
+
+**📖 For detailed Home Assistant integration guide:** See [`docs/integrations/home-assistant/`](docs/integrations/home-assistant/)
 
 ---
 
