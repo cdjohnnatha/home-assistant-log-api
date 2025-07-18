@@ -8,7 +8,6 @@ COPY gradlew .
 COPY gradle gradle
 COPY build.gradle.kts .
 COPY settings.gradle.kts .
-COPY build-logic build-logic
 
 # Copy the logs-api module
 COPY logs-api logs-api

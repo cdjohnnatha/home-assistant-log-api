@@ -1,0 +1,17 @@
+# AWS Region (change if you prefer a different region)
+aws_region = "us-east-1"
+
+# Project configuration
+project_name = "home-assistant-log-api"
+environment  = "dev"
+
+# Instance type (t3.micro is free tier eligible)
+instance_type = "t3.micro"
+
+# Your IP address for SSH access (get from https://checkip.amazonaws.com)
+# Replace this with your actual IP address
+my_ip = "YOUR_IP_ADDRESS_HERE"  # Get from https://checkip.amazonaws.com
+
+# Your existing SNS Topic ARN (replace with your actual ARN)
+# You can find this in AWS Console > SNS > Topics
+sns_topic_arn = "arn:aws:sns:YOUR_REGION:YOUR_ACCOUNT_ID:YOUR_TOPIC_NAME" 

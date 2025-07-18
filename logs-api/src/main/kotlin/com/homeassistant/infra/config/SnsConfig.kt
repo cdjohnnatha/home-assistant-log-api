@@ -4,8 +4,6 @@ import com.homeassistant.infra.extensions.logger
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sns.SnsClient
 
@@ -14,24 +12,16 @@ import software.amazon.awssdk.services.sns.SnsClient
 class SnsConfig {
     @Bean
     fun snsClient(): SnsClient {
-        val accessKey =
-            System.getenv("AWS_ACCESS_KEY")
-                ?: throw IllegalStateException("AWS_ACCESS_KEY environment variable is required")
-        val secretKey =
-            System.getenv("AWS_SECRET_KEY")
-                ?: throw IllegalStateException("AWS_SECRET_KEY environment variable is required")
         val regionName =
             System.getenv("AWS_REGION")
                 ?: throw IllegalStateException("AWS_REGION environment variable is required")
 
-        logger.info("Set SNS Client for region: $regionName")
+        logger.info("Set SNS Client for region: $regionName using IAM role")
 
-        val credentials = AwsBasicCredentials.create(accessKey, secretKey)
-        val region = Region.of(regionName)
-
+        // Use IAM role attached to EC2 instance (best practice)
+        // No need for access keys when running on EC2 with IAM role
         return SnsClient.builder()
-            .region(region)
-            .credentialsProvider(StaticCredentialsProvider.create(credentials))
+            .region(Region.of(regionName))
             .build()
     }
 }
