@@ -211,10 +211,47 @@ resource "aws_instance" "api_server" {
 
   # User data script to set up Docker and your application
   user_data = base64encode(templatefile("${path.module}/user_data.sh", {
-    aws_region = var.aws_region
+    aws_region    = var.aws_region
+    sns_topic_arn = var.sns_topic_arn
   }))
 
   tags = merge(local.common_tags, {
     Name = "${var.project_name}-api-server"
   })
+}
+
+# Cost Management & Monitoring
+# AWS Budget for cost control - monitors monthly spending
+resource "aws_budgets_budget" "monthly_cost_budget" {
+  name         = "${var.project_name}-monthly-budget"
+  budget_type  = "COST"
+  limit_amount = "22"
+  limit_unit   = "USD"
+  time_unit    = "MONTHLY"
+  time_period_start = "2025-01-01_00:00"
+
+  cost_filter {
+    name = "TagKeyValue"
+    values = ["Project$${var.project_name}"]
+  }
+
+  notification {
+    comparison_operator        = "GREATER_THAN"
+    threshold                 = 80
+    threshold_type            = "PERCENTAGE"
+    notification_type         = "ACTUAL"
+    subscriber_email_addresses = []
+    subscriber_sns_topic_arns  = [var.sns_topic_arn]
+  }
+
+  notification {
+    comparison_operator        = "GREATER_THAN"
+    threshold                 = 100
+    threshold_type            = "PERCENTAGE"
+    notification_type          = "FORECASTED"
+    subscriber_email_addresses = []
+    subscriber_sns_topic_arns  = [var.sns_topic_arn]
+  }
+
+  depends_on = [aws_instance.api_server]
 }
