@@ -38,6 +38,7 @@ dependencies {
     // specific dependencies for the logs-api module
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // Automatic .env file loading
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
