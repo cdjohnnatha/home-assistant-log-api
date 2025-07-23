@@ -42,13 +42,13 @@ class ProcessEventUseCaseTest {
                 )
             every { duplicateFilterPort.isDuplicate(any()) } returns false
             every { duplicateFilterPort.recordEvent(any()) } returns Unit
-            every { notificationPublisherUseCase.execute(any()) } returns true
+            every { notificationPublisherUseCase.executeWithRetry(any(), any()) } returns true
 
             // When & Then - verify no exception is thrown
             assertDoesNotThrow { processEventUseCase.execute(event) }
             verify(exactly = 1) { duplicateFilterPort.isDuplicate(event) }
             verify(exactly = 1) { duplicateFilterPort.recordEvent(any()) }
-            verify(exactly = 1) { notificationPublisherUseCase.execute(any()) }
+            verify(exactly = 1) { notificationPublisherUseCase.executeWithRetry(any(), any()) }
         }
 
         @Test
@@ -58,7 +58,7 @@ class ProcessEventUseCaseTest {
             val eventTypes = EventLogType.values()
             every { duplicateFilterPort.isDuplicate(any()) } returns false
             every { duplicateFilterPort.recordEvent(any()) } returns Unit
-            every { notificationPublisherUseCase.execute(any()) } returns true
+            every { notificationPublisherUseCase.executeWithRetry(any(), any()) } returns true
 
             // When & Then
             eventTypes.forEach { eventType ->
@@ -75,7 +75,7 @@ class ProcessEventUseCaseTest {
 
             verify(exactly = eventTypes.size) { duplicateFilterPort.isDuplicate(any()) }
             verify(exactly = eventTypes.size) { duplicateFilterPort.recordEvent(any()) }
-            verify(exactly = eventTypes.size) { notificationPublisherUseCase.execute(any()) }
+            verify(exactly = eventTypes.size) { notificationPublisherUseCase.executeWithRetry(any(), any()) }
         }
     }
 
@@ -95,13 +95,13 @@ class ProcessEventUseCaseTest {
                 )
             every { duplicateFilterPort.isDuplicate(any()) } returns false
             every { duplicateFilterPort.recordEvent(any()) } returns Unit
-            every { notificationPublisherUseCase.execute(any()) } returns true
+            every { notificationPublisherUseCase.executeWithRetry(any(), any()) } returns true
 
             // When & Then
             assertDoesNotThrow { processEventUseCase.execute(event) }
             verify(exactly = 1) { duplicateFilterPort.isDuplicate(event) }
             verify(exactly = 1) { duplicateFilterPort.recordEvent(any()) }
-            verify(exactly = 1) { notificationPublisherUseCase.execute(any()) }
+            verify(exactly = 1) { notificationPublisherUseCase.executeWithRetry(any(), any()) }
         }
 
         @Test
@@ -128,13 +128,13 @@ class ProcessEventUseCaseTest {
                 )
             every { duplicateFilterPort.isDuplicate(any()) } returns false
             every { duplicateFilterPort.recordEvent(any()) } returns Unit
-            every { notificationPublisherUseCase.execute(any()) } returns true
+            every { notificationPublisherUseCase.executeWithRetry(any(), any()) } returns true
 
             // When & Then
             assertDoesNotThrow { processEventUseCase.execute(event) }
             verify(exactly = 1) { duplicateFilterPort.isDuplicate(event) }
             verify(exactly = 1) { duplicateFilterPort.recordEvent(any()) }
-            verify(exactly = 1) { notificationPublisherUseCase.execute(any()) }
+            verify(exactly = 1) { notificationPublisherUseCase.executeWithRetry(any(), any()) }
         }
     }
 
@@ -160,7 +160,7 @@ class ProcessEventUseCaseTest {
             // Then
             verify(exactly = 1) { duplicateFilterPort.isDuplicate(event) }
             verify(exactly = 0) { duplicateFilterPort.recordEvent(any()) }
-            verify(exactly = 0) { notificationPublisherUseCase.execute(any()) }
+            verify(exactly = 0) { notificationPublisherUseCase.executeWithRetry(any(), any()) }
         }
 
         @Test
@@ -176,7 +176,7 @@ class ProcessEventUseCaseTest {
                 )
             every { duplicateFilterPort.isDuplicate(any()) } returns false
             every { duplicateFilterPort.recordEvent(any()) } returns Unit
-            every { notificationPublisherUseCase.execute(any()) } returns true
+            every { notificationPublisherUseCase.executeWithRetry(any(), any()) } returns true
 
             // When
             processEventUseCase.execute(event)
@@ -184,7 +184,7 @@ class ProcessEventUseCaseTest {
             // Then
             verify(exactly = 1) { duplicateFilterPort.isDuplicate(event) }
             verify(exactly = 1) { duplicateFilterPort.recordEvent(any()) }
-            verify(exactly = 1) { notificationPublisherUseCase.execute(any()) }
+            verify(exactly = 1) { notificationPublisherUseCase.executeWithRetry(any(), any()) }
         }
 
         @Test
@@ -200,13 +200,13 @@ class ProcessEventUseCaseTest {
                 )
             every { duplicateFilterPort.isDuplicate(any()) } returns false
             every { duplicateFilterPort.recordEvent(any()) } returns Unit
-            every { notificationPublisherUseCase.execute(any()) } returns false
+            every { notificationPublisherUseCase.executeWithRetry(any(), any()) } returns false
 
             // When & Then
             assertDoesNotThrow { processEventUseCase.execute(event) }
             verify(exactly = 1) { duplicateFilterPort.isDuplicate(event) }
             verify(exactly = 1) { duplicateFilterPort.recordEvent(any()) }
-            verify(exactly = 1) { notificationPublisherUseCase.execute(any()) }
+            verify(exactly = 1) { notificationPublisherUseCase.executeWithRetry(any(), any()) }
         }
     }
 }

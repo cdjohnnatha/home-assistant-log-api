@@ -1,6 +1,7 @@
 package com.homeassistant.application.usecases
 
 import com.homeassistant.domain.port.NotificationPublisherPort
+import com.homeassistant.domain.port.RetryManagerPort
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -14,12 +15,18 @@ import org.junit.jupiter.api.Test
 @DisplayName("NotificationPublisherUseCase Tests")
 class NotificationPublisherUseCaseTest {
     private lateinit var notificationPublisherPort: NotificationPublisherPort
+    private lateinit var retryManagerPort: RetryManagerPort
     private lateinit var notificationPublisherUseCase: NotificationPublisherUseCase
 
     @BeforeEach
     fun setup() {
         notificationPublisherPort = mockk()
-        notificationPublisherUseCase = NotificationPublisherUseCase(notificationPublisherPort)
+        retryManagerPort = mockk()
+        notificationPublisherUseCase = NotificationPublisherUseCase(
+            notificationPublisherPort,
+            retryManagerPort,
+            retryEnabled = true,
+        )
     }
 
     @Nested

@@ -24,14 +24,14 @@ class ProcessEventUseCase(
         val eventHash = EventHash.from(event)
         duplicateFilter.recordEvent(eventHash)
 
-        // Process the event normally
+        // Process the event normally with retry support
         val message = createNotificationMessage(event)
-        val success = notificationPublisher.execute(message)
+        val success = notificationPublisher.executeWithRetry(event, message)
 
         if (success) {
             logger.info("Notification sent successfully for event from: ${event.source}")
         } else {
-            logger.error("Failed to send notification for event from: ${event.source}")
+            logger.warn("Initial notification failed for event from: ${event.source}, retry may be scheduled")
         }
     }
 
