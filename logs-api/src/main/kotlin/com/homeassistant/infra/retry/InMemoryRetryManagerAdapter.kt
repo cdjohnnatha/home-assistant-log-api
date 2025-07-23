@@ -23,7 +23,6 @@ class InMemoryRetryManagerAdapter(
     @Value("\${retry-policy.backoff-multiplier:2.0}")
     private val backoffMultiplier: Double,
 ) : RetryManagerPort {
-
     private val scheduledRetries = ConcurrentHashMap<String, RetryableEvent>()
     private val completedRetries = ConcurrentHashMap<String, RetryableEvent>()
 
@@ -79,11 +78,12 @@ class InMemoryRetryManagerAdapter(
             logger.info("Retry successful for event $eventId after ${event.attemptCount + 1} attempts")
             completedRetries[eventId] = event.copy(lastError = null)
         } else {
-            val updatedEvent = if (error != null) {
-                event.copy(lastError = error)
-            } else {
-                event
-            }
+            val updatedEvent =
+                if (error != null) {
+                    event.copy(lastError = error)
+                } else {
+                    event
+                }
 
             if (event.hasExceededMaxAttempts()) {
                 logger.error(
@@ -93,11 +93,12 @@ class InMemoryRetryManagerAdapter(
                 completedRetries[eventId] = updatedEvent
             } else {
                 // Schedule next retry with exponential backoff
-                val nextRetry = event.scheduleNextRetry(
-                    error = error ?: "Unknown error",
-                    baseDelaySeconds = initialDelaySeconds,
-                    backoffMultiplier = backoffMultiplier,
-                )
+                val nextRetry =
+                    event.scheduleNextRetry(
+                        error = error ?: "Unknown error",
+                        baseDelaySeconds = initialDelaySeconds,
+                        backoffMultiplier = backoffMultiplier,
+                    )
                 scheduleRetry(nextRetry)
             }
         }
@@ -156,4 +157,4 @@ class InMemoryRetryManagerAdapter(
             "completed_failed" to totalFailed,
         )
     }
-} 
+}

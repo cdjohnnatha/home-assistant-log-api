@@ -60,12 +60,14 @@ class NotificationPublisherUseCase(
 
         // Schedule for retry
         try {
-            val retryableEvent = RetryableEvent(
-                originalEvent = event,
-                message = message,
-                attemptCount = 0, // This was the first attempt
-                maxAttempts = 3,
-            )
+            // This was the first attempt
+            val retryableEvent =
+                RetryableEvent(
+                    originalEvent = event,
+                    message = message,
+                    attemptCount = 0,
+                    maxAttempts = 3,
+                )
 
             retryManager.scheduleRetry(retryableEvent)
             logger.info(

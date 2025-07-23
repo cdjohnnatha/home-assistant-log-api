@@ -48,4 +48,4 @@ interface RetryManagerPort {
      * @return Map with retry statistics (total, pending, failed, etc.)
      */
     fun getRetryStats(): Map<String, Long>
-} 
+}

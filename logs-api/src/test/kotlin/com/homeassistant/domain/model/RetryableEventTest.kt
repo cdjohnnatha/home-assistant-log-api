@@ -11,11 +11,9 @@ import kotlin.test.assertTrue
 
 @DisplayName("RetryableEvent Tests")
 class RetryableEventTest {
-
     @Nested
     @DisplayName("Retry Attempt Management")
     inner class RetryAttemptManagementTests {
-
         @Test
         @DisplayName("Should not exceed max attempts initially")
         fun `should not exceed max attempts initially`() {
@@ -72,7 +70,6 @@ class RetryableEventTest {
     @Nested
     @DisplayName("Exponential Backoff")
     inner class ExponentialBackoffTests {
-
         @Test
         @DisplayName("Should schedule first retry after 1 second")
         fun `should schedule first retry after 1 second`() {
@@ -135,11 +132,12 @@ class RetryableEventTest {
             val beforeScheduling = Instant.now()
 
             // When - Using 3.0 multiplier instead of 2.0
-            val nextRetry = retryableEvent.scheduleNextRetry(
-                error = "Custom backoff error",
-                baseDelaySeconds = 1,
-                backoffMultiplier = 3.0,
-            )
+            val nextRetry =
+                retryableEvent.scheduleNextRetry(
+                    error = "Custom backoff error",
+                    baseDelaySeconds = 1,
+                    backoffMultiplier = 3.0,
+                )
 
             // Then
             assertEquals(2, nextRetry.attemptCount)
@@ -156,11 +154,12 @@ class RetryableEventTest {
             val beforeScheduling = Instant.now()
 
             // When - Using 5 seconds base delay
-            val nextRetry = retryableEvent.scheduleNextRetry(
-                error = "Custom delay error",
-                baseDelaySeconds = 5,
-                backoffMultiplier = 2.0,
-            )
+            val nextRetry =
+                retryableEvent.scheduleNextRetry(
+                    error = "Custom delay error",
+                    baseDelaySeconds = 5,
+                    backoffMultiplier = 2.0,
+                )
 
             // Then
             assertEquals(1, nextRetry.attemptCount)
@@ -173,7 +172,6 @@ class RetryableEventTest {
     @Nested
     @DisplayName("Event Expiration")
     inner class EventExpirationTests {
-
         @Test
         @DisplayName("Should not be expired immediately after creation")
         fun `should not be expired immediately after creation`() {
@@ -211,7 +209,6 @@ class RetryableEventTest {
     @Nested
     @DisplayName("Event Properties")
     inner class EventPropertiesTests {
-
         @Test
         @DisplayName("Should preserve original event data")
         fun `should preserve original event data`() {
@@ -220,10 +217,11 @@ class RetryableEventTest {
             val message = "Test notification message"
 
             // When
-            val retryableEvent = RetryableEvent(
-                originalEvent = originalEvent,
-                message = message,
-            )
+            val retryableEvent =
+                RetryableEvent(
+                    originalEvent = originalEvent,
+                    message = message,
+                )
 
             // Then
             assertEquals(originalEvent.source, retryableEvent.originalEvent.source)
@@ -253,10 +251,11 @@ class RetryableEventTest {
             val message = "Test message"
 
             // When
-            val retryableEvent = RetryableEvent(
-                originalEvent = originalEvent,
-                message = message,
-            )
+            val retryableEvent =
+                RetryableEvent(
+                    originalEvent = originalEvent,
+                    message = message,
+                )
 
             // Then
             assertEquals(0, retryableEvent.attemptCount)
@@ -292,4 +291,4 @@ class RetryableEventTest {
             payload = mapOf("test" to "data"),
         )
     }
-} 
+}

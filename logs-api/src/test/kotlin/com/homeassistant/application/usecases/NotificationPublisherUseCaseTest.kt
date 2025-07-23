@@ -22,11 +22,12 @@ class NotificationPublisherUseCaseTest {
     fun setup() {
         notificationPublisherPort = mockk()
         retryManagerPort = mockk()
-        notificationPublisherUseCase = NotificationPublisherUseCase(
-            notificationPublisherPort,
-            retryManagerPort,
-            retryEnabled = true,
-        )
+        notificationPublisherUseCase =
+            NotificationPublisherUseCase(
+                notificationPublisherPort,
+                retryManagerPort,
+                retryEnabled = true,
+            )
     }
 
     @Nested
