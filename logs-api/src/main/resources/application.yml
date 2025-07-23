@@ -18,3 +18,10 @@ aws:
   sns:
     topic:
       arn: ${AWS_SNS_TOPIC_ARN}
+
+# Duplicate Filter Configuration
+duplicate-filter:
+  enabled: ${DUPLICATE_FILTER_ENABLED:true}
+  ttl-minutes: ${DUPLICATE_FILTER_TTL_MINUTES:5}
+  cleanup-interval-minutes: ${DUPLICATE_FILTER_CLEANUP_INTERVAL_MINUTES:10}
+  max-cache-size: ${DUPLICATE_FILTER_MAX_CACHE_SIZE:1000}
