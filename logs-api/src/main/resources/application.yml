@@ -18,3 +18,19 @@ aws:
   sns:
     topic:
       arn: ${AWS_SNS_TOPIC_ARN}
+
+# Duplicate Filter Configuration
+duplicate-filter:
+  enabled: ${DUPLICATE_FILTER_ENABLED:true}
+  ttl-minutes: ${DUPLICATE_FILTER_TTL_MINUTES:5}
+  cleanup-interval-minutes: ${DUPLICATE_FILTER_CLEANUP_INTERVAL_MINUTES:10}
+  max-cache-size: ${DUPLICATE_FILTER_MAX_CACHE_SIZE:1000}
+
+# Retry Policy Configuration
+retry-policy:
+  enabled: ${RETRY_POLICY_ENABLED:true}
+  max-attempts: ${RETRY_POLICY_MAX_ATTEMPTS:3}
+  initial-delay-seconds: ${RETRY_POLICY_INITIAL_DELAY_SECONDS:1}
+  backoff-multiplier: ${RETRY_POLICY_BACKOFF_MULTIPLIER:2.0}
+  execution-interval-seconds: ${RETRY_POLICY_EXECUTION_INTERVAL_SECONDS:30}
+  cleanup-interval-minutes: ${RETRY_POLICY_CLEANUP_INTERVAL_MINUTES:60}
