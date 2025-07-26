@@ -40,7 +40,7 @@ output "budget_limit" {
 
 output "cost_alert_info" {
   description = "Cost monitoring information"
-  value = <<-EOT
+  value       = <<-EOT
     Budget created: ${aws_budgets_budget.monthly_cost_budget.name}
     Monthly limit: $22 USD
     Alert at 80%: $17.60 USD (actual costs)

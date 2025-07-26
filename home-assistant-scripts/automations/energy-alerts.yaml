@@ -1,0 +1,54 @@
+# Automação: Relatório Diário de Consumo do Ventilador do Escritório
+- id: ventilador_escritorio_relatorio_diario
+  alias: "Ventilador Escritório - Relatório Diário"
+  description: "Envia notificação diária com consumo de energia do ventilador do escritório"
+  
+  trigger:
+    - platform: time
+      at: "23:55:00"  # 5 minutos antes da meia-noite
+  
+  condition:
+    - condition: template
+      value_template: >
+        {{ states('sensor.ventilador_escritorio_consumo_diario') not in ['unavailable', 'unknown'] }}
+  
+  action:
+    # Capturar valores
+    - variables:
+        consumo_diario: >
+          {{ states('sensor.ventilador_escritorio_consumo_diario') | float(0) | round(2) }}
+        custo_diario: >
+          {{ states('sensor.ventilador_escritorio_custo_diario') | float(0) | round(2) }}
+        horas_hoje: >
+          {{ states('sensor.ventilador_escritorio_horas_uso_diario') | float(0) | round(1) }}
+        horas_semana: >
+          {{ states('sensor.ventilador_escritorio_horas_uso_semanal') | float(0) | round(1) }}
+        data_hoje: >
+          {{ now().strftime('%d/%m/%Y') }}
+    
+    # Enviar notificação
+    - service: notify.notify  # Usar o serviço de notificação padrão
+      data:
+        title: "⚡ Relatório Energia - Ventilador Escritório"
+        message: >
+          📅 {{ data_hoje }}
+          
+          💡 Consumo: {{ consumo_diario }} kWh
+          💰 Custo: €{{ custo_diario }}
+          
+          {% if consumo_diario > 1.0 %}
+          ⚠️ Consumo alto hoje!
+          {% elif consumo_diario < 0.2 %}
+          ✅ Consumo baixo hoje.
+          {% else %}
+          📊 Consumo normal.
+          {% endif %}
+    
+    # Registrar no log do Home Assistant
+    - service: system_log.write
+      data:
+        message: >
+          Ventilador Escritório - Consumo diário: {{ consumo_diario }}kWh, 
+          Custo: €{{ custo_diario }} ({{ data_hoje }})
+        level: info
+        logger: energy_monitoring.ventilador_escritorio

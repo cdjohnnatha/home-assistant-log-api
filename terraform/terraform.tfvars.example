@@ -14,4 +14,8 @@ my_ip = "YOUR_IP_ADDRESS_HERE"  # Get from https://checkip.amazonaws.com
 
 # Your existing SNS Topic ARN (replace with your actual ARN)
 # You can find this in AWS Console > SNS > Topics
-sns_topic_arn = "arn:aws:sns:YOUR_REGION:YOUR_ACCOUNT_ID:YOUR_TOPIC_NAME" 
+sns_topic_arn = "arn:aws:sns:YOUR_REGION:YOUR_ACCOUNT_ID:YOUR_TOPIC_NAME"
+
+# SSH public key for EC2 access (replace with your actual public key)
+# Get your public key with: cat ~/.ssh/id_rsa.pub
+ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7... your-email@example.com" 

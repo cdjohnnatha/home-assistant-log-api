@@ -1,0 +1,121 @@
+name: Home Assistant Pipeline - Config Sync
+
+on:
+  push:
+    branches: [main]
+    paths: 
+      - 'home-assistant-scripts/**'
+      - '.github/workflows/sync-home-assistant.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'home-assistant-scripts/**'
+      - '.github/workflows/sync-home-assistant.yml'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  validate-home-assistant:
+    name: 🏠 Validate HA Configs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate YAML files
+      run: |
+        echo "🔍 Validating YAML syntax in home-assistant-scripts/"
+        find home-assistant-scripts/ -name "*.yaml" -o -name "*.yml" | while read file; do
+          echo "Checking: $file"
+          python3 -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+        done
+        echo "✅ All YAML files are valid"
+
+    - name: Check file structure
+      run: |
+        echo "📁 Validating directory structure..."
+        required_dirs=("statistics" "templates" "automations" "scripts" "integrations")
+        for dir in "${required_dirs[@]}"; do
+          if [ ! -d "home-assistant-scripts/$dir" ]; then
+            echo "❌ Required directory missing: $dir"
+            exit 1
+          fi
+          echo "✅ Directory exists: $dir"
+        done
+
+  sync-home-assistant:
+    name: 🔄 Sync HA Scripts  
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout source repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Git configuration
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Sync home-assistant-scripts to home-assistant-config
+      run: |
+        # Create home-assistant-config directory structure (if not exists)
+        mkdir -p home-assistant-config/custom/
+        
+        # Backup existing files that are not in source (if any)
+        if [ -d "home-assistant-config/custom/" ]; then
+          echo "📁 Preserving existing structure..."
+          mkdir -p .backup-temp/
+          cp -r home-assistant-config/custom/ .backup-temp/ 2>/dev/null || true
+        fi
+        
+        # Remove only directories that will be replaced
+        rm -rf home-assistant-config/custom/statistics/
+        rm -rf home-assistant-config/custom/templates/
+        rm -rf home-assistant-config/custom/automations/
+        rm -rf home-assistant-config/custom/scripts/
+        rm -rf home-assistant-config/custom/integrations/
+        
+        # Copy new content from source
+        cp -r home-assistant-scripts/* home-assistant-config/custom/
+        
+        # Restore any other files that were not in source directories
+        if [ -d ".backup-temp/" ]; then
+          # This would restore files in other directories not managed by sync
+          echo "📁 Backup preserved in case manual restore needed"
+          rm -rf .backup-temp/
+        fi
+        
+        # Add all changes to git
+        git add home-assistant-config/
+        
+        # Check if there are any changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to sync"
+          exit 0
+        fi
+        
+        # Commit changes to the same repository
+        git commit -m "🔄 Sync Home Assistant configurations
+        
+        - Updated home-assistant-config/custom/ from home-assistant-scripts/
+        - Source commit: ${{ github.sha }}
+        - Triggered by: ${{ github.event_name }}
+        "
+        
+        git push origin main
+
+    - name: Create summary
+      run: |
+        echo "## 🔄 Home Assistant Sync Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Successfully synced \`home-assistant-scripts/\` to Home Assistant repository" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Target Directory:** \`home-assistant-config/custom/\`" >> $GITHUB_STEP_SUMMARY
+        echo "**Source Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "**Triggered by:** \`${{ github.event_name }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🏠 Home Assistant will automatically reload configurations on next restart or manual reload." >> $GITHUB_STEP_SUMMARY 

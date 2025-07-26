@@ -1,0 +1,68 @@
+name: Infrastructure Pipeline - Terraform
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/infrastructure-pipeline.yml'
+  pull_request:
+    branches: [main, develop] 
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/infrastructure-pipeline.yml'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  terraform-validate:
+    name: 🏗️ Validate Terraform
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "~1.5"
+
+    - name: Terraform Format Check
+      working-directory: terraform
+      run: |
+        echo "🔍 Checking Terraform formatting..."
+        if ! terraform fmt -check -recursive; then
+          echo ""
+          echo "❌ Terraform files need formatting!"
+          echo "💡 To fix locally, run:"
+          echo "   cd terraform && terraform fmt -recursive"
+          echo ""
+          echo "📁 Files that need formatting:"
+          terraform fmt -check -recursive -list=true
+          exit 1
+        fi
+        echo "✅ All Terraform files are properly formatted"
+
+    - name: Terraform Init
+      working-directory: terraform
+      run: terraform init -backend=false
+
+    - name: Terraform Validate
+      working-directory: terraform
+      run: terraform validate
+
+    - name: Terraform Plan (Dry Run)
+      working-directory: terraform
+      run: terraform plan -out=tfplan
+      env:
+        TF_VAR_aws_region: "us-east-1"  # Example default
+      continue-on-error: true
+
+    - name: Create summary
+      run: |
+        echo "## 🏗️ Infrastructure Validation Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Terraform format, init, and validation completed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Working Directory:** \`terraform/\`" >> $GITHUB_STEP_SUMMARY
+        echo "**Triggered by:** \`${{ github.event_name }}\`" >> $GITHUB_STEP_SUMMARY 

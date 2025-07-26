@@ -1,0 +1,76 @@
+# Sensor de Integração - Acumula consumo em tempo real (kWh)
+- platform: integration
+  source: sensor.ventilador_escritorio
+  name: "Ventilador Escritório - Energia Acumulada"
+  unit_prefix: k
+  round: 3
+  method: left
+
+# Utility Meter - Reseta diariamente o acumulador
+- platform: utility_meter
+  source: sensor.ventilador_escritorio_energia_acumulada
+  name: "Ventilador Escritório - Consumo Diário Real"
+  cycle: daily
+  
+# Utility Meter - Reseta semanalmente o acumulador  
+- platform: utility_meter
+  source: sensor.ventilador_escritorio_energia_acumulada
+  name: "Ventilador Escritório - Consumo Semanal Real"
+  cycle: weekly
+
+# Sensor Template para Status Ligado/Desligado  
+- platform: template
+  sensors:
+    ventilador_escritorio_ligado:
+      friendly_name: "Ventilador Escritório - Status"
+      value_template: >
+        {{ states('sensor.ventilador_escritorio') | float(0) > 5 }}
+      icon_template: >
+        {% if states('sensor.ventilador_escritorio') | float(0) > 5 %}
+          mdi:fan
+        {% else %}
+          mdi:fan-off
+        {% endif %}
+
+    # Template para custo diário REAL (baseado no consumo acumulado)
+    ventilador_escritorio_custo_diario:
+      friendly_name: "Ventilador Escritório - Custo Diário"
+      unit_of_measurement: "€"
+      device_class: monetary
+      value_template: >
+        {% set consumo_real = states('sensor.ventilador_escritorio_consumo_diario_real') | float(0) %}
+        {% set tarifa = 0.15 %}
+        {{ (consumo_real * tarifa) | round(2) }}
+      icon_template: mdi:currency-eur
+
+# Horas de uso diário (quando potência > 5W)
+- platform: history_stats
+  name: "Ventilador Escritório - Horas Uso Diário"
+  entity_id: sensor.ventilador_escritorio_ligado
+  state: 'True'
+  type: time
+  start: '{{ now().replace(hour=0, minute=0, second=0, microsecond=0) }}'
+  end: '{{ now() }}'
+
+# Horas de uso semanal
+- platform: history_stats
+  name: "Ventilador Escritório - Horas Uso Semanal"
+  entity_id: sensor.ventilador_escritorio_ligado
+  state: 'True'
+  type: time
+  start: '{{ (now() - timedelta(days=7)).replace(hour=0, minute=0, second=0, microsecond=0) }}'
+  end: '{{ now() }}'
+
+# Template para custo semanal (baseado nas horas semanais)
+- platform: template
+  sensors:
+    # Template para custo semanal REAL (baseado no consumo acumulado)
+    ventilador_escritorio_custo_semanal:
+      friendly_name: "Ventilador Escritório - Custo Semanal"
+      unit_of_measurement: "€"
+      device_class: monetary
+      value_template: >
+        {% set consumo_real = states('sensor.ventilador_escritorio_consumo_semanal_real') | float(0) %}
+        {% set tarifa = 0.15 %}
+        {{ (consumo_real * tarifa) | round(2) }}
+      icon_template: mdi:currency-eur
