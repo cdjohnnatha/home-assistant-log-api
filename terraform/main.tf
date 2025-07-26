@@ -13,7 +13,7 @@ data "http" "my_ip" {
 locals {
   # Clean up the IP response (remove newline)
   my_current_ip = chomp(data.http.my_ip.response_body)
-  
+
   # Common tags for all resources
   common_tags = {
     Project     = var.project_name
@@ -87,7 +87,7 @@ resource "aws_security_group" "api_server" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Allow from anywhere
+    cidr_blocks = ["0.0.0.0/0"] # Allow from anywhere
   }
 
   # Allow SSH access only from your IP
@@ -96,7 +96,7 @@ resource "aws_security_group" "api_server" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]  # Only your IP
+    cidr_blocks = ["${var.my_ip}/32"] # Only your IP
   }
 
   # Allow all outbound traffic (for Docker pulls, SNS calls, etc.)
@@ -193,7 +193,7 @@ data "aws_ami" "amazon_linux" {
 # Key pair for SSH access
 resource "aws_key_pair" "main" {
   key_name   = "${var.project_name}-key"
-  public_key = file("~/.ssh/id_rsa.pub")  # Your SSH public key
+  public_key = file("~/.ssh/id_rsa.pub") # Your SSH public key
 
   tags = merge(local.common_tags, {
     Name = "${var.project_name}-key"
@@ -204,10 +204,10 @@ resource "aws_key_pair" "main" {
 resource "aws_instance" "api_server" {
   ami                    = data.aws_ami.amazon_linux.id
   instance_type          = var.instance_type
-  key_name              = aws_key_pair.main.key_name
+  key_name               = aws_key_pair.main.key_name
   vpc_security_group_ids = [aws_security_group.api_server.id]
-  subnet_id             = aws_subnet.public.id
-  iam_instance_profile  = aws_iam_instance_profile.ec2_sns_profile.name
+  subnet_id              = aws_subnet.public.id
+  iam_instance_profile   = aws_iam_instance_profile.ec2_sns_profile.name
 
   # User data script to set up Docker and your application
   user_data = base64encode(templatefile("${path.module}/user_data.sh", {
@@ -223,31 +223,31 @@ resource "aws_instance" "api_server" {
 # Cost Management & Monitoring
 # AWS Budget for cost control - monitors monthly spending
 resource "aws_budgets_budget" "monthly_cost_budget" {
-  name         = "${var.project_name}-monthly-budget"
-  budget_type  = "COST"
-  limit_amount = "22"
-  limit_unit   = "USD"
-  time_unit    = "MONTHLY"
+  name              = "${var.project_name}-monthly-budget"
+  budget_type       = "COST"
+  limit_amount      = "22"
+  limit_unit        = "USD"
+  time_unit         = "MONTHLY"
   time_period_start = "2025-01-01_00:00"
 
   cost_filter {
-    name = "TagKeyValue"
+    name   = "TagKeyValue"
     values = ["Project$${var.project_name}"]
   }
 
   notification {
     comparison_operator        = "GREATER_THAN"
-    threshold                 = 80
-    threshold_type            = "PERCENTAGE"
-    notification_type         = "ACTUAL"
+    threshold                  = 80
+    threshold_type             = "PERCENTAGE"
+    notification_type          = "ACTUAL"
     subscriber_email_addresses = []
     subscriber_sns_topic_arns  = [var.sns_topic_arn]
   }
 
   notification {
     comparison_operator        = "GREATER_THAN"
-    threshold                 = 100
-    threshold_type            = "PERCENTAGE"
+    threshold                  = 100
+    threshold_type             = "PERCENTAGE"
     notification_type          = "FORECASTED"
     subscriber_email_addresses = []
     subscriber_sns_topic_arns  = [var.sns_topic_arn]
