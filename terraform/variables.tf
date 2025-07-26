@@ -35,3 +35,10 @@ variable "sns_topic_arn" {
   type        = string
   # We'll set this in terraform.tfvars
 }
+
+variable "ssh_public_key" {
+  description = "SSH public key for EC2 access"
+  type        = string
+  default     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7... # Replace with your actual public key"
+  # Set this in terraform.tfvars or export TF_VAR_ssh_public_key
+}

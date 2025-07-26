@@ -193,7 +193,7 @@ data "aws_ami" "amazon_linux" {
 # Key pair for SSH access
 resource "aws_key_pair" "main" {
   key_name   = "${var.project_name}-key"
-  public_key = file("~/.ssh/id_rsa.pub") # Your SSH public key
+  public_key = var.ssh_public_key
 
   tags = merge(local.common_tags, {
     Name = "${var.project_name}-key"
