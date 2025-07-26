@@ -29,7 +29,19 @@ jobs:
 
     - name: Terraform Format Check
       working-directory: terraform
-      run: terraform fmt -check -recursive
+      run: |
+        echo "🔍 Checking Terraform formatting..."
+        if ! terraform fmt -check -recursive; then
+          echo ""
+          echo "❌ Terraform files need formatting!"
+          echo "💡 To fix locally, run:"
+          echo "   cd terraform && terraform fmt -recursive"
+          echo ""
+          echo "📁 Files that need formatting:"
+          terraform fmt -check -recursive -list=true
+          exit 1
+        fi
+        echo "✅ All Terraform files are properly formatted"
 
     - name: Terraform Init
       working-directory: terraform
