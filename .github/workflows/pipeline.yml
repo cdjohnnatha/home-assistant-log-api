@@ -1,10 +1,28 @@
-name: Compile Lint Test Build Pipeline
+name: API Pipeline - Spring Boot
 
 on:
   push:
     branches: [ main, develop ]
+    paths: 
+      - 'logs-api/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle/**'
+      - 'gradlew*'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - '.github/workflows/pipeline.yml'
   pull_request:
     branches: [ main, develop ]
+    paths:
+      - 'logs-api/**'
+      - 'build.gradle.kts' 
+      - 'settings.gradle.kts'
+      - 'gradle/**'
+      - 'gradlew*'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - '.github/workflows/pipeline.yml'
 
 jobs:
   pipeline:

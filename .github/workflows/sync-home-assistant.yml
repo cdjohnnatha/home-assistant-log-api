@@ -1,14 +1,53 @@
-name: Sync Home Assistant Scripts
+name: Home Assistant Pipeline - Config Sync
 
 on:
   push:
     branches: [main]
-    paths: ['home-assistant-scripts/**']
+    paths: 
+      - 'home-assistant-scripts/**'
+      - '.github/workflows/sync-home-assistant.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'home-assistant-scripts/**'
+      - '.github/workflows/sync-home-assistant.yml'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
-  sync-home-assistant:
+  validate-home-assistant:
+    name: 🏠 Validate HA Configs
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate YAML files
+      run: |
+        echo "🔍 Validating YAML syntax in home-assistant-scripts/"
+        find home-assistant-scripts/ -name "*.yaml" -o -name "*.yml" | while read file; do
+          echo "Checking: $file"
+          python3 -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+        done
+        echo "✅ All YAML files are valid"
+
+    - name: Check file structure
+      run: |
+        echo "📁 Validating directory structure..."
+        required_dirs=("statistics" "templates" "automations" "scripts" "integrations")
+        for dir in "${required_dirs[@]}"; do
+          if [ ! -d "home-assistant-scripts/$dir" ]; then
+            echo "❌ Required directory missing: $dir"
+            exit 1
+          fi
+          echo "✅ Directory exists: $dir"
+        done
+
+  sync-home-assistant:
+    name: 🔄 Sync HA Scripts  
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
     - name: Checkout source repository
